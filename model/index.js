@@ -57,7 +57,7 @@ const updateContact = async (contactId, body) => {
         ])
         .write()
     : db.setState([...db.getState()]).write();
-
+ 
   return updatedContact.id ? updatedContact : null;
   // const id = contactId.toString();
   // const record = db.get("contacts").find({ id }).assign(body).value();
