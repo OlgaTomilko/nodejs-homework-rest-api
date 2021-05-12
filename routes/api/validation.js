@@ -29,7 +29,7 @@ const validate = async (schema, body, next) => {
     await schema.validateAsync(body);
     next();
   } catch (err) {
-    next({ status: 400, message: err.message });
+    next({ status: 400, message: `Field: ${err.message.replace(/''/g, "")}` });
   }
 };
 

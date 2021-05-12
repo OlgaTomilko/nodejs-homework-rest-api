@@ -55,6 +55,11 @@ router.delete("/:contactId", async (req, res, next) => {
 });
 
 router.put("/:contactId", validateUpdateContact, async (req, res, next) => {
+  if (JSON.stringify(req.body) === "{}") {
+    return res
+      .status(200)
+      .json({ status: "Bad Request", code: 400, message: "missing fields" });
+  }
   try {
     const contact = await Contacts.updateContact(
       req.params.contactId,
