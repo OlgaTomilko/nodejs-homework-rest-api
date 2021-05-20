@@ -1,7 +1,20 @@
-const low = require("lowdb");
-const FileSync = require("lowdb/adapters/FileSync");
+const { MongoClient } = require("mongodb");
+require("dotenv").config();
 
-const adapter = new FileSync("./model/contacts.json");
-const db = low(adapter);
+const uriDb = process.env.URI_DB;
+
+const db = MongoClient.connect(uriDb, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  // poolSize: 5, // Error: option poolsize is not supported
+  maxPoolSize: 5,
+});
+
+process.on("SIGINT", async () => {
+  const client = await db;
+  client.close();
+  console.log("Disconnect MongoDB");
+  process.exit();
+});
 
 module.exports = db;
