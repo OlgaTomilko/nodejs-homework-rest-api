@@ -1,10 +1,8 @@
-// const { MongoClient } = require("mongodb");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
 const uriDb = process.env.URI_DB;
 
-// const db = MongoClient.connect(uriDb, {
 const db = mongoose.connect(uriDb, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -25,8 +23,6 @@ mongoose.connection.on("disconnected", () => {
 });
 
 process.on("SIGINT", async () => {
-  // const client = await db;
-  // client.close();
   mongoose.connection.close(() => {
     console.log("Disconnect MongoDB");
     process.exit();
