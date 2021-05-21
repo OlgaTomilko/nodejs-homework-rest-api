@@ -36,19 +36,9 @@ const addContact = async (body) => {
     ...body,
     ...(body.favorite ? {} : { favorite: false }),
   };
-  // const {
-  //   ops: [result],
-  // }
-  const result = await collection.insertOne(record);
-  // {"status": "success",
-  //     "code": 201,
-  //     "data": {
-  //         "contact": {
-  //             "acknowledged": true,
-  //             "insertedId": "60a69d74bcd9ad71567327d0"
-  //         }
-  //     }
-  // }
+  const {
+    ops: [result],
+  } = await collection.insertOne(record);
   return result;
 };
 
@@ -59,7 +49,7 @@ const updateContact = async (contactId, body) => {
       _id: new ObjectId(contactId),
     },
     { $set: body },
-    { returnOriginal: false } // не работает
+    { returnOriginal: false }
   );
   return result;
 };

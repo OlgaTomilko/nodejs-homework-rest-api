@@ -6,8 +6,7 @@ const uriDb = process.env.URI_DB;
 const db = MongoClient.connect(uriDb, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  // poolSize: 5, // Error: option poolsize is not supported
-  maxPoolSize: 5,
+  poolSize: 5,
 });
 
 process.on("SIGINT", async () => {
