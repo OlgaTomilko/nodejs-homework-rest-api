@@ -1,45 +1,45 @@
-const { v4: uuid } = require("uuid");
-const db = require("./db");
+const Contact = require("./schemas/contact");
 
 const listContacts = async () => {
-  return db.getState();
+  const results = await Contact.find({});
+  return results;
 };
 
 const getContactById = async (contactId) => {
-  return db.getState().find(({ id }) => id.toString() === contactId);
+  const result = await Contact.findOne({ _id: contactId });
+  return result;
 };
 
 const removeContact = async (contactId) => {
-  const contact = db.getState().filter(({ id }) => id.toString() === contactId);
-  const record = db.getState().filter(({ id }) => id.toString() !== contactId);
-  db.setState(record).write();
-  return contact;
+  const result = Contact.findByIdAndRemove({ _id: contactId });
+  return result;
 };
 
 const addContact = async (body) => {
-  const id = uuid();
-  const record = {
-    id,
-    ...body,
-  };
-  db.setState([...db.getState(), record]).write();
-  return record;
+  const result = Contact.create(body);
+  return result;
 };
 
 const updateContact = async (contactId, body) => {
-  const contact = db.getState().find(({ id }) => id.toString() === contactId);
-  const updatedContact = { ...contact, ...body };
+  const result = await Contact.findOneAndUpdate(
+    {
+      _id: contactId,
+    },
+    { ...body },
+    { new: true }
+  );
+  return result;
+};
 
-  updatedContact.id
-    ? db
-        .setState([
-          ...db.getState().filter(({ id }) => id.toString() !== contactId),
-          updatedContact,
-        ])
-        .write()
-    : db.setState([...db.getState()]).write();
-
-  return updatedContact.id ? updatedContact : null;
+const updateStatusContact = async (contactId, body) => {
+  const result = await Contact.findByIdAndUpdate(
+    contactId,
+    { ...body },
+    {
+      new: true,
+    }
+  );
+  return result;
 };
 
 module.exports = {
@@ -48,4 +48,5 @@ module.exports = {
   removeContact,
   addContact,
   updateContact,
+  updateStatusContact,
 };

@@ -9,7 +9,9 @@ const schemaAddContact = Joi.object({
   }),
 
   phone: [Joi.string(), Joi.number()],
-}).xor("email", "phone");
+
+  favorite: Joi.boolean(),
+}).min(2);
 
 const schemaUpdateContact = Joi.object({
   name: Joi.string().alphanum().min(2).max(30).optional(),
@@ -22,6 +24,12 @@ const schemaUpdateContact = Joi.object({
     .optional(),
 
   phone: [Joi.string(), Joi.number()],
+
+  favorite: Joi.boolean(),
+}).min(1);
+
+const schemaUpdateStatusContact = Joi.object({
+  favorite: Joi.boolean().required(),
 });
 
 const validate = async (schema, body, next) => {
@@ -38,4 +46,7 @@ module.exports.validateAddContact = (req, _res, next) => {
 };
 module.exports.validateUpdateContact = (req, _res, next) => {
   return validate(schemaUpdateContact, req.body, next);
+};
+module.exports.validateUpdateStatusContact = (req, _res, next) => {
+  return validate(schemaUpdateStatusContact, req.body, next);
 };
