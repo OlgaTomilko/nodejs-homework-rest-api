@@ -8,5 +8,6 @@ const limiter = require("../../../helpers/limiter");
 router.post("/signup", limiter, validateRegistration, ctrl.reg);
 router.post("/login", validateRegistration, ctrl.login);
 router.post("/logout", guard, ctrl.logout);
+router.get("/current", guard, ctrl.current);
 
 module.exports = router;
