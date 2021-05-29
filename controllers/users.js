@@ -15,15 +15,12 @@ const reg = async (req, res, next) => {
       });
     }
     const newUser = await Users.create(req.body);
-    // const { id, name, email } = newUser;
     const { email, subscription } = newUser;
     return res.status(201).json({
       status: "Created",
       code: 201,
       data: {
         user: {
-          // id,
-          // name,
           email,
           subscription,
         },

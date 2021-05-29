@@ -3,7 +3,6 @@ const Contacts = require("../model/contacts");
 const listContacts = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    // const contacts = await Contacts.listContacts(userId, req.query);
     const { contacts, total, limit, offset, page } =
       await Contacts.listContacts(userId, req.query);
 
