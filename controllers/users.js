@@ -16,7 +16,7 @@ const reg = async (req, res, next) => {
     }
     const newUser = await Users.create(req.body);
     // const { id, name, email } = newUser;
-    const { email } = newUser;
+    const { email, subscription } = newUser;
     return res.status(201).json({
       status: "Created",
       code: 201,
@@ -25,7 +25,7 @@ const reg = async (req, res, next) => {
           // id,
           // name,
           email,
-          subscription: "starter",
+          subscription,
         },
       },
     });
@@ -36,7 +36,7 @@ const reg = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, subscription } = req.body;
     const user = await Users.findByEmail(email);
     const isValidPassword = await user?.validPassword(password);
 
@@ -57,7 +57,7 @@ const login = async (req, res, next) => {
         token,
         user: {
           email,
-          subscription: "starter",
+          subscription,
         },
       },
     });
@@ -73,17 +73,34 @@ const logout = async (req, res, next) => {
 
 const current = async (req, res, next) => {
   try {
-    const { email } = req.user;
+    const { email, subscription } = req.user;
     return res.status(200).json({
       status: "OK",
       code: 200,
       data: {
         user: {
           email,
-          subscription: "starter",
+          subscription,
         },
       },
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const subscription = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const user = await Users.updateSubscription(userId, req.body);
+    if (user) {
+      return res
+        .status(200)
+        .json({ status: "success", code: 200, data: { user } });
+    }
+    return res
+      .status(404)
+      .json({ status: "error", code: 404, message: "Not Found" });
   } catch (error) {
     next(error);
   }
@@ -94,4 +111,5 @@ module.exports = {
   login,
   logout,
   current,
+  subscription,
 };

@@ -9,7 +9,11 @@ const schemaRegistration = Joi.object({
     .required(),
 
   password: Joi.string().alphanum().min(2).max(30).required(),
-}).min(2);
+});
+
+const schemaSubscription = Joi.object({
+  subscription: Joi.any().valid("starter", "pro", "business").required(),
+});
 
 const validate = async (schema, body, next) => {
   try {
@@ -22,4 +26,7 @@ const validate = async (schema, body, next) => {
 
 module.exports.validateRegistration = (req, _res, next) => {
   return validate(schemaRegistration, req.body, next);
+};
+module.exports.validateUpdateSubscription = (req, _res, next) => {
+  return validate(schemaSubscription, req.body, next);
 };
