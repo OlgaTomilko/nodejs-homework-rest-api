@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const Users = require("../model/users");
+const { HttpCode } = require("../helpers/constants");
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 const reg = async (req, res, next) => {
@@ -65,7 +66,10 @@ const login = async (req, res, next) => {
   }
 };
 
-const logout = async (req, res, next) => {};
+const logout = async (req, res, next) => {
+  await Users.updateToken(req.user.id, null);
+  return res.status(HttpCode.NO_CONTENT).json({});
+};
 
 module.exports = {
   reg,
