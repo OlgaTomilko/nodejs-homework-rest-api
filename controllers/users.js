@@ -15,7 +15,7 @@ const reg = async (req, res, next) => {
       });
     }
     const newUser = await Users.create(req.body);
-    const { email, subscription } = newUser;
+    const { email, subscription, avatarURL } = newUser;
     return res.status(201).json({
       status: "Created",
       code: 201,
@@ -23,6 +23,7 @@ const reg = async (req, res, next) => {
         user: {
           email,
           subscription,
+          avatarURL,
         },
       },
     });
