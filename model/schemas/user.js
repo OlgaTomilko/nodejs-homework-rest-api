@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
-// const { function } = require("joi");
 const SALT_FACTOR = 6;
 
 const userSchema = new Schema(
