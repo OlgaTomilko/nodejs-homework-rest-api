@@ -1,4 +1,3 @@
-// const { verify } = require("../controllers/users");
 const User = require("./schemas/user");
 
 const findById = async (id) => {

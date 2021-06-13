@@ -13,19 +13,12 @@ class CreateSenderSendgrid {
 class CreateSenderNodemailer {
   async send(msg) {
     const config = {
-      // host: "smpt.meta.ua",
-      // port: 465,
-      // secure: true,
-      // auth: {
-      //   user: emailConfig.email.nodemailer,
-      //   pass: process.env.PASSWORD,
-      // },
       host: "smtp.gmail.com",
-      port: 587,
+      port: 587, // port: 465, secure: true,
       secure: false,
       auth: {
-        user: "olga.tomilko.mk@gmail.com",
-        pass: "alik12042017",
+        user: emailConfig.email.nodemailer,
+        pass: process.env.PASSWORD,
       },
     };
     const transporter = nodemailer.createTransport(config);
