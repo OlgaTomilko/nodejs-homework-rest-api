@@ -1,3 +1,4 @@
+// const { verify } = require("../controllers/users");
 const User = require("./schemas/user");
 
 const findById = async (id) => {
@@ -6,6 +7,10 @@ const findById = async (id) => {
 
 const findByEmail = async (email) => {
   return await User.findOne({ email });
+};
+
+const getUserByVerifyToken = async (token) => {
+  return await User.findOne({ verifyToken: token });
 };
 
 const create = async (options) => {
@@ -32,11 +37,17 @@ const updateSubscription = async (userId, body) => {
   return result;
 };
 
+const updateVerifyToken = async (id, verify, token) => {
+  return await User.updateOne({ _id: id }, { verify, verifyToken: token });
+};
+
 module.exports = {
   findById,
   findByEmail,
+  getUserByVerifyToken,
   create,
   updateToken,
   updateAvatar,
   updateSubscription,
+  updateVerifyToken,
 };

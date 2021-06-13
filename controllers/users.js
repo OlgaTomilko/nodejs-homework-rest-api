@@ -3,6 +3,11 @@ require("dotenv").config();
 const Users = require("../model/users");
 const { HttpCode } = require("../helpers/constants");
 const UploadAvatar = require("../services/upload-avatars-local");
+const EmailService = require("../services/email");
+const {
+  CreateSenderNodemailer,
+  CreateSenderSendgrid,
+} = require("../services/sender-email");
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const AVATARS_OF_USERS = process.env.AVATARS_OF_USERS;
 
@@ -17,7 +22,23 @@ const reg = async (req, res, next) => {
       });
     }
     const newUser = await Users.create(req.body);
-    const { email, subscription, avatarURL } = newUser;
+    const { email, subscription, avatarURL, verifyToken } = newUser;
+    // TODO send email
+    try {
+      const emailService = new EmailService(
+        process.env.NODE_ENV,
+        // new CreateSenderSendgrid()
+        new CreateSenderNodemailer()
+      );
+      await emailService.sendVerifyPasswordEmail(
+        verifyToken,
+        email,
+        subscription
+      );
+    } catch (e) {
+      console.log(e.message);
+    }
+
     return res.status(201).json({
       status: "Created",
       code: 201,
@@ -40,7 +61,7 @@ const login = async (req, res, next) => {
     const user = await Users.findByEmail(email);
     const isValidPassword = await user?.validPassword(password);
 
-    if (!user || !isValidPassword) {
+    if (!user || !isValidPassword || !user.verify) {
       return res.status(401).json({
         status: "Unauthorized",
         code: 401,
@@ -128,6 +149,29 @@ const subscription = async (req, res, next) => {
   }
 };
 
+const verify = async (req, res, next) => {
+  try {
+    const user = await Users.getUserByVerifyToken(req.params.verificationToken);
+    console.log(req.params.verificationToken);
+    if (user) {
+      await Users.updateVerifyToken(user.id, true, null);
+      return res.status(200).json({
+        status: "success",
+        code: 200,
+        message: "Verification successful",
+      });
+    }
+    return res.status(404).json({
+      status: "error",
+      code: 404,
+      message: "User not found",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const repeatSendEmailVerify = async (req, res, next) => {};
+
 module.exports = {
   reg,
   login,
@@ -135,4 +179,6 @@ module.exports = {
   current,
   subscription,
   avatars,
+  verify,
+  repeatSendEmailVerify,
 };
