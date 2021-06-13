@@ -1,4 +1,5 @@
 const Joi = require("joi");
+const { HttpCode } = require("../../../helpers/constants");
 
 const schemaAddContact = Joi.object({
   name: Joi.string().alphanum().min(2).max(30).required(),
@@ -37,7 +38,10 @@ const validate = async (schema, body, next) => {
     await schema.validateAsync(body);
     next();
   } catch (err) {
-    next({ status: 400, message: `Field: ${err.message.replace(/''/g, "")}` });
+    next({
+      status: HttpCode.BAD_REQUEST,
+      message: `Field: ${err.message.replace(/''/g, "")}`,
+    });
   }
 };
 
